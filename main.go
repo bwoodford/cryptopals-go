@@ -1,8 +1,9 @@
-
 package main
 
-import "fmt"
+func base64(characters string) string {
+	return characters
+}
 
 func main() {
-    fmt.Println("Hello, world.")
+	base64("")
 }
