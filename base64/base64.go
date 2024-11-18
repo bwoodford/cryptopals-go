@@ -114,13 +114,16 @@ func Encode(hexChars string) string {
 		mask = uint8(0b1000)
 		hex = fetchHex[unicode.ToUpper(char)]
 
+		// Iterate through each hex value (4 bits).
 		for j := range 4 {
 
 			buffer = buffer << 1
+			// Put the acquired bit to the rightmost bit in the buffer
 			buffer |= ((hex & mask) >> ((4 - j) - 1))
 			mask = mask >> 1
 			baseIndex += 1
 
+			// Get the base64 value when we've filled the buffer with 6 bits.
 			if baseIndex == 6 {
 				encoded += fetchb64[buffer]
 				buffer = 0
@@ -129,10 +132,13 @@ func Encode(hexChars string) string {
 		}
 	}
 
+	// Add the last bits in the buffer.
 	if baseIndex > 0 {
 		remainder := 6 - baseIndex
+		// Shift the buffer over the remaining amount.
 		encoded += fetchb64[buffer<<remainder]
 
+		// Add artificial padding to the output string.
 		switch remainder {
 		case 2:
 			encoded += padding
