@@ -131,3 +131,7 @@ func ToHex(input []byte) (string, error) {
 
 	return result, nil
 }
+
+func ToASCII(input []byte) string {
+	return string(input)
+}

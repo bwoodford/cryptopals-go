@@ -8,6 +8,7 @@ import (
 func main() {
 	setOneChallengeOne()
 	setOneChallengeTwo()
+	setOneChallengeThree()
 }
 
 func setOneChallengeOne() {
@@ -46,6 +47,51 @@ func setOneChallengeTwo() {
 	}
 
 	if hex != "746865206B696420646F6E277420706C6179" {
+		log.Fatalf("%s: %v", heading, "incorrect value")
+	}
+}
+
+func setOneChallengeThree() {
+
+	heading := "Set One / Challenge Three failed"
+
+	bytesValue, err := ToBytes("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	length := len(bytesValue)
+	keyExpand := make([]byte, length)
+
+	/*
+		I didn't do scoring...just brute forced it and looked at the output
+		for i := range 256 {
+
+			for j := range length {
+				keyExpand[j] = byte(i)
+			}
+
+			decryptBytes, err := XOR(bytesValue, keyExpand)
+			if err != nil {
+				log.Fatalf("%s: %v", heading, err)
+			}
+
+			log.Printf("key: %d, value: %s\n", i, ToASCII(decryptBytes))
+		}
+	*/
+
+	secretKey := byte('X')
+
+	for j := range length {
+		keyExpand[j] = secretKey
+	}
+
+	decryptBytes, err := XOR(bytesValue, keyExpand)
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	if ToASCII(decryptBytes) != "Cooking MC's like a pound of bacon" {
 		log.Fatalf("%s: %v", heading, "incorrect value")
 	}
 }
