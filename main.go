@@ -4,6 +4,7 @@ import (
 	"cryptopals-go/base64"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -20,6 +21,7 @@ func main() {
 	setOneChallengeOne()
 	setOneChallengeTwo()
 	setOneChallengeThree()
+	setOneChallengeFour()
 }
 
 func setOneChallengeOne() {
@@ -89,28 +91,68 @@ func setOneChallengeThree() {
 		decryptValues[i] = ToASCII(decryptBytes)
 	}
 
+	// Answer: Cooking MC's like a pound of bacon
 	for i, value := range Score(decryptValues)[0:5] {
-		log.Printf("number %d: %v\n", i+1, value)
+		log.Printf("challenge 3 | number %d: %v\n", i+1, value)
 	}
-
-	/*
-		secretKey := byte('X')
-
-		for j := range length {
-			keyExpand[j] = secretKey
-		}
-
-		decryptBytes, err := XOR(bytesValue, keyExpand)
-		if err != nil {
-			log.Fatalf("%s: %v", heading, err)
-		}
-
-		if ToASCII(decryptBytes) != "Cooking MC's like a pound of bacon" {
-			log.Fatalf("%s: %v", heading, "incorrect value")
-		}
-	*/
 }
 
 func setOneChallengeFour() {
 
+	heading := "Set One / Challenge Four failed"
+
+	contents, err := os.ReadFile("testdata/set-one-challenge-four.txt")
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	lines := strings.Split(string(contents), "\n")
+	if len(lines) <= 0 {
+		log.Fatalf("%s: %v", heading, "no rows in file")
+	}
+
+	decBytes, err := ToBytes(lines[0])
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	// Score for each iteration of decryption
+	iterScores := make([]string, 256)
+	// Top scores for each iteration
+	topScores := make([]string, 0, 5*len(lines))
+
+	var length int
+	var keyExpand []byte
+
+	for _, encValue := range lines {
+
+		decBytes, err = ToBytes(encValue)
+		if err != nil {
+			log.Fatalf("%s: %v", heading, err)
+		}
+
+		length = len(decBytes)
+		keyExpand = make([]byte, length)
+
+		for i := range 256 {
+
+			for j := range length {
+				keyExpand[j] = byte(i)
+			}
+
+			decryptBytes, err := XOR(decBytes, keyExpand)
+			if err != nil {
+				log.Fatalf("%s: %v", heading, err)
+			}
+
+			iterScores[i] = ToASCII(decryptBytes)
+		}
+
+		topScores = append(topScores, Score(iterScores)[0:5]...)
+	}
+
+	// Answer: Now that the party is jumping
+	for i, value := range Score(topScores)[0:5] {
+		log.Printf("challenge 4 | number %d: %v\n", i+1, value)
+	}
 }
