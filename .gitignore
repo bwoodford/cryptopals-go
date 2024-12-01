@@ -1,2 +1,4 @@
 # Output of make command
 bin/
+
+testdata/
