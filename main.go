@@ -3,9 +3,20 @@ package main
 import (
 	"cryptopals-go/base64"
 	"log"
+	"os"
 )
 
 func main() {
+	// Open or create the log file
+	file, err := os.OpenFile("pals.log", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	// Set the log output to the file
+	log.SetOutput(file)
+
 	setOneChallengeOne()
 	setOneChallengeTwo()
 	setOneChallengeThree()
@@ -62,36 +73,44 @@ func setOneChallengeThree() {
 
 	length := len(bytesValue)
 	keyExpand := make([]byte, length)
+	decryptValues := make([]string, 256)
+
+	for i := range 256 {
+
+		for j := range length {
+			keyExpand[j] = byte(i)
+		}
+
+		decryptBytes, err := XOR(bytesValue, keyExpand)
+		if err != nil {
+			log.Fatalf("%s: %v", heading, err)
+		}
+
+		decryptValues[i] = ToASCII(decryptBytes)
+	}
+
+	for i, value := range Score(decryptValues)[0:5] {
+		log.Printf("number %d: %v\n", i+1, value)
+	}
 
 	/*
-		I didn't do scoring...just brute forced it and looked at the output
-		for i := range 256 {
+		secretKey := byte('X')
 
-			for j := range length {
-				keyExpand[j] = byte(i)
-			}
+		for j := range length {
+			keyExpand[j] = secretKey
+		}
 
-			decryptBytes, err := XOR(bytesValue, keyExpand)
-			if err != nil {
-				log.Fatalf("%s: %v", heading, err)
-			}
+		decryptBytes, err := XOR(bytesValue, keyExpand)
+		if err != nil {
+			log.Fatalf("%s: %v", heading, err)
+		}
 
-			log.Printf("key: %d, value: %s\n", i, ToASCII(decryptBytes))
+		if ToASCII(decryptBytes) != "Cooking MC's like a pound of bacon" {
+			log.Fatalf("%s: %v", heading, "incorrect value")
 		}
 	*/
+}
 
-	secretKey := byte('X')
+func setOneChallengeFour() {
 
-	for j := range length {
-		keyExpand[j] = secretKey
-	}
-
-	decryptBytes, err := XOR(bytesValue, keyExpand)
-	if err != nil {
-		log.Fatalf("%s: %v", heading, err)
-	}
-
-	if ToASCII(decryptBytes) != "Cooking MC's like a pound of bacon" {
-		log.Fatalf("%s: %v", heading, "incorrect value")
-	}
 }
