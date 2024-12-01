@@ -1,4 +1,8 @@
 # Output of make command
 bin/
 
+# Remove testdata directory
 testdata/
+
+# Remove log files
+*.log
