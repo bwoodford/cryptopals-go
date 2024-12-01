@@ -22,6 +22,7 @@ func main() {
 	setOneChallengeTwo()
 	setOneChallengeThree()
 	setOneChallengeFour()
+	setOneChallengeFive()
 }
 
 func setOneChallengeOne() {
@@ -155,4 +156,37 @@ func setOneChallengeFour() {
 	for i, value := range Score(topScores)[0:5] {
 		log.Printf("challenge 4 | number %d: %v\n", i+1, value)
 	}
+}
+
+func setOneChallengeFive() {
+
+	heading := "Set One / Challenge Five failed"
+
+	message := `Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal`
+
+	key := []rune{'I', 'C', 'E'}
+
+	length := len(message)
+	keyExpand := make([]byte, length)
+
+	for i := range len(message) {
+		keyExpand[i] = byte(key[i%3])
+	}
+
+	encBytes, err := XOR([]byte(message), keyExpand)
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	hex, err := ToHex(encBytes)
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	if hex != strings.ToUpper("0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f") {
+		log.Fatalf("%s: %v", heading, "incorrect value")
+	}
+
+	log.Printf("challenge 5 | answer: %v", hex)
 }
