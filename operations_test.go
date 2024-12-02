@@ -72,3 +72,26 @@ func TestToHex(t *testing.T) {
 		})
 	}
 }
+
+func TestDistance(t *testing.T) {
+
+	type testStruct struct {
+		a string
+		b string
+	}
+	tests := []struct {
+		input testStruct
+		want  int
+	}{
+		{testStruct{a: "this is a test", b: "wokka wokka!!!"}, 37},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%#v", tt.input), func(t *testing.T) {
+			got, err := Distance(tt.input.a, tt.input.b)
+			if got != tt.want || err != nil {
+				t.Errorf("got: '%v', want: '%v', err: %v", got, tt.want, err)
+			}
+		})
+	}
+}

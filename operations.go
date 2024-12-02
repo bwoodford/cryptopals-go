@@ -2,6 +2,7 @@ package main
 
 import (
 	"cmp"
+	"errors"
 	"fmt"
 	"math"
 	"slices"
@@ -196,4 +197,34 @@ func Score(input []string) []string {
 	})
 
 	return input
+}
+
+func Distance(a string, b string) (int, error) {
+
+	if len(a) != len(b) {
+		return 0, errors.New("inputs must be the same length")
+	}
+
+	distance := 0
+
+	aBytes := []byte(a)
+	bBytes := []byte(b)
+
+	diffBytes, err := XOR(aBytes, bBytes)
+	if err != nil {
+		return 0, err
+	}
+
+	var mask byte
+
+	for i := 0; i < len(diffBytes); i++ {
+
+		mask = 0b1000_0000
+		for j := range byte(8) {
+			distance += int((diffBytes[i] & mask) >> (7 - j))
+			mask = mask >> 1
+		}
+	}
+
+	return distance, nil
 }
