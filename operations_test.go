@@ -18,7 +18,7 @@ func TestToBytes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			got, err := ToBytes(tt.input)
+			got, err := HexToBytes(tt.input)
 			if !bytes.Equal(got, tt.want) || err != nil {
 				t.Errorf("got: '%v', want: '%v', err: %v", got, tt.want, err)
 			}
@@ -65,7 +65,7 @@ func TestToHex(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%#v", tt.input), func(t *testing.T) {
-			got, err := ToHex(tt.input)
+			got, err := HexToString(tt.input)
 			if got != tt.want || err != nil {
 				t.Errorf("got: '%v', want: '%v', err: %v", got, tt.want, err)
 			}

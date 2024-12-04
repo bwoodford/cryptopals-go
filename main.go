@@ -29,23 +29,30 @@ func setOneChallengeOne() {
 
 	heading := "Set One / Challenge One failed"
 
-	encoding := base64.Encode("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d")
+	hexBytes, err := HexToBytes("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d")
+	if err != nil {
+		log.Fatalf("%s: %v", heading, err)
+	}
+
+	encoding := base64.Encode(string(hexBytes))
 
 	if encoding != "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t" {
 		log.Fatalf("%s: %v", heading, "incorrect value")
 	}
+
+	log.Printf("challenge 1 | answer: %v", encoding)
 }
 
 func setOneChallengeTwo() {
 
 	heading := "Set One / Challenge Two failed"
 
-	bytesOne, err := ToBytes("1c0111001f010100061a024b53535009181c")
+	bytesOne, err := HexToBytes("1c0111001f010100061a024b53535009181c")
 	if err != nil {
 		log.Fatalf("%s: %v", heading, err)
 	}
 
-	bytesTwo, err := ToBytes("686974207468652062756c6c277320657965")
+	bytesTwo, err := HexToBytes("686974207468652062756c6c277320657965")
 	if err != nil {
 		log.Fatalf("%s: %v", heading, err)
 	}
@@ -55,7 +62,7 @@ func setOneChallengeTwo() {
 		log.Fatalf("%s: %v", heading, err)
 	}
 
-	hex, err := ToHex(operation)
+	hex, err := HexToString(operation)
 	if err != nil {
 		log.Fatalf("%s: %v", heading, err)
 	}
@@ -63,13 +70,15 @@ func setOneChallengeTwo() {
 	if hex != "746865206B696420646F6E277420706C6179" {
 		log.Fatalf("%s: %v", heading, "incorrect value")
 	}
+
+	log.Printf("challenge 2 | answer: %v", hex)
 }
 
 func setOneChallengeThree() {
 
 	heading := "Set One / Challenge Three failed"
 
-	bytesValue, err := ToBytes("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")
+	bytesValue, err := HexToBytes("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")
 	if err != nil {
 		log.Fatalf("%s: %v", heading, err)
 	}
@@ -112,7 +121,7 @@ func setOneChallengeFour() {
 		log.Fatalf("%s: %v", heading, "no rows in file")
 	}
 
-	decBytes, err := ToBytes(lines[0])
+	decBytes, err := HexToBytes(lines[0])
 	if err != nil {
 		log.Fatalf("%s: %v", heading, err)
 	}
@@ -127,7 +136,7 @@ func setOneChallengeFour() {
 
 	for _, encValue := range lines {
 
-		decBytes, err = ToBytes(encValue)
+		decBytes, err = HexToBytes(encValue)
 		if err != nil {
 			log.Fatalf("%s: %v", heading, err)
 		}
@@ -179,7 +188,7 @@ I go crazy when I hear a cymbal`
 		log.Fatalf("%s: %v", heading, err)
 	}
 
-	hex, err := ToHex(encBytes)
+	hex, err := HexToString(encBytes)
 	if err != nil {
 		log.Fatalf("%s: %v", heading, err)
 	}

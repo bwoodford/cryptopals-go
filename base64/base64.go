@@ -1,29 +1,6 @@
 package base64
 
-import (
-	"unicode"
-)
-
 const padding = "="
-
-var fetchHex = map[rune]uint8{
-	'0': 0b0000,
-	'1': 0b0001,
-	'2': 0b0010,
-	'3': 0b0011,
-	'4': 0b0100,
-	'5': 0b0101,
-	'6': 0b0110,
-	'7': 0b0111,
-	'8': 0b1000,
-	'9': 0b1001,
-	'A': 0b1010,
-	'B': 0b1011,
-	'C': 0b1100,
-	'D': 0b1101,
-	'E': 0b1110,
-	'F': 0b1111,
-}
 
 var fetchb64 = map[uint8]string{
 	0b000000: "A",
@@ -95,31 +72,30 @@ var fetchb64 = map[uint8]string{
 	0b111111: "/",
 }
 
-// Encode takes a string containing hexadecimal values and outputs the base64 representation.
-func Encode(hexChars string) string {
+// Encode takes a string containing unicode characters and outputs the base64 representation.
+func Encode(unicode string) string {
 
-	if len(hexChars) == 0 {
+	if len(unicode) == 0 {
 		return ""
 	}
 
 	encoded := ""
 
-	mask := uint8(0b1000)
+	mask := uint8(0b1000_0000)
 	buffer := uint8(0)
-	hex := uint8(0)
 	baseIndex := 0
 
-	for _, char := range hexChars {
+	uniBytes := []byte(unicode)
 
-		mask = uint8(0b1000)
-		hex = fetchHex[unicode.ToUpper(char)]
+	for _, uni := range uniBytes {
 
-		// Iterate through each hex value (4 bits).
-		for j := range 4 {
+		mask = 0b1000_0000
+
+		for j := range 8 {
 
 			buffer = buffer << 1
 			// Put the acquired bit to the rightmost bit in the buffer
-			buffer |= ((hex & mask) >> ((4 - j) - 1))
+			buffer |= ((uni & mask) >> ((8 - j) - 1))
 			mask = mask >> 1
 			baseIndex += 1
 
@@ -148,5 +124,18 @@ func Encode(hexChars string) string {
 	}
 
 	return encoded
+
+}
+
+// Decode takes a string containing base 64 characters and outputs the hex representation.
+func Decode(b64Chars string) string {
+
+	if len(b64Chars) == 0 {
+		return ""
+	}
+
+	decoded := ""
+
+	return decoded
 
 }

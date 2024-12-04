@@ -92,7 +92,7 @@ func XOR(a []byte, b []byte) ([]byte, error) {
 	return result, nil
 }
 
-func ToBytes(hexString string) ([]byte, error) {
+func HexToBytes(hexString string) ([]byte, error) {
 
 	hexRunes := []rune(hexString)
 	length := len(hexRunes)
@@ -131,9 +131,9 @@ func ToBytes(hexString string) ([]byte, error) {
 	return result, nil
 }
 
-func ToHex(input []byte) (string, error) {
+func HexToString(hexBytes []byte) (string, error) {
 
-	if len(input)%2 != 0 {
+	if len(hexBytes)%2 != 0 {
 		return "", fmt.Errorf("byte slice length must be an even number")
 	}
 
@@ -150,12 +150,12 @@ func ToHex(input []byte) (string, error) {
 	var second rune
 	var err error
 
-	for _, value := range input {
-		first, err = checkMap((value & 0xF0) >> 4)
+	for _, b := range hexBytes {
+		first, err = checkMap((b & 0xF0) >> 4)
 		if err != nil {
 			return result, err
 		}
-		second, err = checkMap((value & 0x0F))
+		second, err = checkMap((b & 0x0F))
 		if err != nil {
 			return result, err
 		}
