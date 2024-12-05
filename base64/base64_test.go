@@ -38,3 +38,36 @@ func TestEncode(t *testing.T) {
 		})
 	}
 }
+
+// TestDecode tests if a string representing base 64 characters is correctly converted to a hexadecimal string.
+func TestDecode(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t", "I'm killing your brain like a poisonous mushroom"},
+		{"", ""},
+		{"TQ==", "M"},
+		{"YQ==", "a"},
+		{"eg==", "z"},
+		{"TWE=", "Ma"},
+		{"eno=", "zz"},
+		{"QUJD", "ABC"},
+		{"SGVsbG8=", "Hello"},
+		{"V29ybGQ=", "World"},
+		{"VGVzdA==", "Test"},
+		{"RXhhbXBsZQ==", "Example"},
+		{"ICE=", " !"},
+		{"SGVsbG8gV29ybGQhIQ==", "Hello World!!"},
+		{"VGhpcyBpcyBhIHRlc3Qu", "This is a test."},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			got := Decode(tt.input)
+			if got != tt.want {
+				t.Errorf("got: '%v', want: '%v'", got, tt.want)
+			}
+		})
+	}
+}
