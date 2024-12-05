@@ -27,6 +27,7 @@ func TestEncode(t *testing.T) {
 		{"2323", "MjMyMw=="},
 		{"48656c6c6f20576f726c642121", "NDg2NTZjNmM2ZjIwNTc2ZjcyNmM2NDIxMjE="},
 		{"54686973206973206120746573742e", "NTQ2ODY5NzMyMDY5NzMyMDYxMjA3NDY1NzM3NDJl"},
+		{"🌈🤖🍕🚀🎉🌋🐱‍👤🍦🎸🌙", "8J+MiPCfpJbwn42V8J+agPCfjonwn4yL8J+QseKAjfCfkaTwn42m8J+OuPCfjJk="},
 	}
 
 	for _, tt := range tests {
@@ -60,6 +61,7 @@ func TestDecode(t *testing.T) {
 		{"ICE=", " !"},
 		{"SGVsbG8gV29ybGQhIQ==", "Hello World!!"},
 		{"VGhpcyBpcyBhIHRlc3Qu", "This is a test."},
+		{"8J+MiPCfpJbwn42V8J+agPCfjonwn4yL8J+QseKAjfCfkaTwn42m8J+OuPCfjJk=", "🌈🤖🍕🚀🎉🌋🐱‍👤🍦🎸🌙"},
 	}
 
 	for _, tt := range tests {
