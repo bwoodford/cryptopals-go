@@ -199,13 +199,15 @@ func Encode(unicode string) string {
 }
 
 // Decode takes a string containing base64 characters and outputs the unicode representation.
-func Decode(b64Chars string) string {
+func Decode(b64Chars string) []byte {
+
+	var decoded []byte
 
 	if len(b64Chars) == 0 {
-		return ""
+		return decoded
 	}
 
-	decoded := make([]byte, 0, len(b64Chars))
+	decoded = make([]byte, 0, len(b64Chars))
 	mask := uint8(0b0010_0000)
 	buffer := uint8(0)
 	b64Byte := uint8(0)
@@ -234,5 +236,5 @@ func Decode(b64Chars string) string {
 		}
 	}
 
-	return string(decoded)
+	return decoded
 }

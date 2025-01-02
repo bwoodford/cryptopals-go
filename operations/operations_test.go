@@ -76,14 +76,14 @@ func TestToHex(t *testing.T) {
 func TestDistance(t *testing.T) {
 
 	type testStruct struct {
-		a string
-		b string
+		a []byte
+		b []byte
 	}
 	tests := []struct {
 		input testStruct
 		want  int
 	}{
-		{testStruct{a: "this is a test", b: "wokka wokka!!!"}, 37},
+		{testStruct{a: []byte("this is a test"), b: []byte("wokka wokka!!!")}, 37},
 	}
 
 	for _, tt := range tests {

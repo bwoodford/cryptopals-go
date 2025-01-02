@@ -4,39 +4,39 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
-	"math"
 	"slices"
 	"unicode"
 )
 
+
 // Taken from https://en.wikipedia.org/wiki/Letter_frequency
-var letterFrequency = map[rune]float64{
-	'A': 8.2,
-	'B': 1.5,
-	'C': 2.8,
-	'D': 4.3,
-	'E': 12.7,
-	'F': 2.2,
-	'G': 2.0,
-	'H': 6.1,
-	'I': 7.0,
-	'J': 0.15,
-	'K': 0.77,
-	'L': 4.0,
-	'M': 2.4,
-	'N': 6.7,
-	'O': 7.5,
-	'P': 1.9,
-	'Q': 0.095,
-	'R': 6.0,
-	'S': 6.3,
-	'T': 9.1,
-	'U': 2.8,
-	'V': 0.98,
-	'W': 2.4,
-	'X': 0.15,
-	'Y': 2.0,
-	'Z': 0.074,
+var characterFrequency = map[rune]float64{
+	'A': .082,
+	'B': .015,
+	'C': .028,
+	'D': .043,
+	'E': .127,
+	'F': .022,
+	'G': .020,
+	'H': .061,
+	'I': .070,
+	'J': .002,
+	'K': .008,
+	'L': .040,
+	'M': .024,
+	'N': .067,
+	'O': .075,
+	'P': .019,
+	'Q': .001,
+	'R': .060,
+	'S': .063,
+	'T': .091,
+	'U': .028,
+	'V': .010,
+	'W': .024,
+	'X': .002,
+	'Y': .020,
+	'Z': .001,
 }
 
 var fetchHexByte = map[rune]byte{
@@ -172,21 +172,18 @@ func ToASCII(input []byte) string {
 
 func Score(input []string) []string {
 
-	calc := func(decrypt string) float64 {
-		score := float64(0)
-		length := len(decrypt)
-		aFreq := make(map[rune]int)
+	calc := func(decrypt string) int {
+		score := 0
+
+		var upper rune
+		var ok bool
 
 		for _, char := range decrypt {
-			aFreq[unicode.ToUpper(char)] += 1
-		}
-
-		var diff float64
-		var freq float64
-		for key, value := range aFreq {
-			diff = float64(value / length)
-			freq = letterFrequency[key]
-			score += math.Abs(freq - diff)
+			upper = unicode.ToUpper(char)
+			_, ok = characterFrequency[upper]
+			if ok  || upper == ' '{
+				score += 1
+			}
 		}
 
 		return score
@@ -199,7 +196,7 @@ func Score(input []string) []string {
 	return input
 }
 
-func Distance(a string, b string) (int, error) {
+func Distance(a []byte, b []byte) (int, error) {
 
 	if len(a) != len(b) {
 		return 0, errors.New("inputs must be the same length")
@@ -207,10 +204,7 @@ func Distance(a string, b string) (int, error) {
 
 	distance := 0
 
-	aBytes := []byte(a)
-	bBytes := []byte(b)
-
-	diffBytes, err := XOR(aBytes, bBytes)
+	diffBytes, err := XOR(a, b)
 	if err != nil {
 		return 0, err
 	}
@@ -227,4 +221,37 @@ func Distance(a string, b string) (int, error) {
 	}
 
 	return distance, nil
+}
+
+func ChiSquaredScore(input string) float64 {
+
+	length := len(input)
+	score := float64(0)
+
+	characters := make(map[rune]int, 26)
+	ignore := 0
+	for _, r := range input {
+		if int(r) == 32 || int(r) == 13 || int(r) == 9 {
+			ignore += 1
+		} else {
+			// Maybe add some ignores for characters we actually care about like spaces, carriage returns...etc
+			characters[unicode.ToUpper(r)] += 1
+		}
+	}
+
+	length = length - ignore
+
+	var freq float64
+	var ok bool
+	for r, observed := range characters {
+		freq, ok = characterFrequency[r]
+		if !ok {
+			freq = 0.001
+		}
+		expected := float64(length) * freq
+		diff := (float64(observed)-expected)
+		score += ((diff * diff) / expected)
+	}
+
+	return score
 }

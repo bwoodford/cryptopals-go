@@ -67,7 +67,7 @@ func TestDecode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			got := Decode(tt.input)
-			if got != tt.want {
+			if string(got) != tt.want {
 				t.Errorf("got: '%v', want: '%v'", got, tt.want)
 			}
 		})
